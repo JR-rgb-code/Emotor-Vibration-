@@ -262,6 +262,38 @@ select option{background:#0d1117;}
 
 .gap{height:8px;}
 footer{text-align:center;padding:16px;font-size:9px;color:#484f58;line-height:1.6;font-family:monospace;}
+
+/* ACHSAUSWAHL */
+.axis-setup{margin:0 12px;}
+.svg-wrap{background:#161b22;border:1px solid #30363d;border-radius:10px;
+  padding:12px;margin-bottom:8px;display:flex;justify-content:center;}
+.axis-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:8px;}
+.axi-card{background:#161b22;border:2px solid #30363d;border-radius:10px;
+  padding:10px 14px;cursor:pointer;transition:border-color .15s,background .15s;
+  display:flex;align-items:flex-start;gap:12px;}
+.axi-card.on{border-color:#58a6ff;background:rgba(88,166,255,.08);}
+.axi-card.on.warn-axis{border-color:#f0a32b;background:rgba(240,163,43,.07);}
+.axi-icon{width:36px;height:36px;border-radius:7px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;margin-top:1px;}
+.axi-text h3{font-size:13px;font-weight:bold;margin-bottom:2px;}
+.axi-text p{font-size:10px;color:#7d8590;font-family:monospace;line-height:1.5;}
+.axi-text .axi-norm{font-size:10px;color:#3fb950;font-family:monospace;margin-top:3px;}
+.axi-radio{margin-left:auto;width:18px;height:18px;border-radius:50%;
+  border:2px solid #30363d;flex-shrink:0;margin-top:2px;transition:all .15s;}
+.axi-card.on .axi-radio{border-color:#58a6ff;background:#58a6ff;
+  box-shadow:0 0 6px rgba(88,166,255,.5);}
+.axi-card.on.warn-axis .axi-radio{border-color:#f0a32b;background:#f0a32b;}
+.axis-go-btn{display:block;width:100%;padding:14px;border-radius:9px;border:none;
+  background:#2ea043;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;
+  margin-top:4px;}
+.axis-go-btn:active{background:#238636;}
+.orient-hint{background:rgba(88,166,255,.06);border:1px solid rgba(88,166,255,.15);
+  border-radius:8px;padding:8px 12px;font-size:10px;color:#7d8590;
+  font-family:monospace;line-height:1.7;margin-bottom:8px;}
+.orient-hint b{color:#58a6ff;}
+.axis-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;
+  font-weight:bold;font-family:monospace;background:rgba(88,166,255,.15);color:#58a6ff;
+  margin-left:6px;vertical-align:middle;}
 </style>
 </head>
 <body>
@@ -281,8 +313,9 @@ footer{text-align:center;padding:16px;font-size:9px;color:#484f58;line-height:1.
 <div class="gap"></div>
 <div class="tabs">
   <button class="tab on" onclick="showTab('rechner')">&#9881; RECHNER</button>
+  <button class="tab" onclick="showTab('achse')">&#128207; ACHSE</button>
   <button class="tab" onclick="showTab('messung')">&#128268; MESSUNG</button>
-  <button class="tab" onclick="showTab('protokoll')">&#128196; PROTOKOLL</button>
+  <button class="tab" onclick="showTab('protokoll')">&#128196; LOG</button>
 </div>
 
 <!-- ════════════════════════════════════ -->
@@ -472,6 +505,175 @@ footer{text-align:center;padding:16px;font-size:9px;color:#484f58;line-height:1.
 
 </div><!-- /tab-rechner -->
 
+
+<!-- ════════════════════════════════════ -->
+<!-- TAB 2: ACHSAUSWAHL                  -->
+<!-- ════════════════════════════════════ -->
+<div class="panel" id="tab-achse">
+
+  <div class="sec-lbl">Messachse &amp; Ausrichtung (DIN ISO 20816-3)</div>
+
+  <div class="axis-setup">
+
+    <!-- SVG MOTOR + IPHONE DIAGRAMM -->
+    <div class="svg-wrap">
+      <svg id="axisSvg" viewBox="0 0 360 220" width="336" height="185" xmlns="http://www.w3.org/2000/svg">
+
+        <!-- Hintergrund -->
+        <rect width="360" height="220" fill="#0d1117" rx="8"/>
+
+        <!-- ── MOTOR ── -->
+        <!-- Motorgehäuse -->
+        <rect x="60" y="70" width="140" height="80" rx="10" fill="#1c2330" stroke="#30363d" stroke-width="1.5"/>
+        <!-- Kühlrippen -->
+        <line x1="80"  y1="70" x2="80"  y2="150" stroke="#30363d" stroke-width="1"/>
+        <line x1="100" y1="70" x2="100" y2="150" stroke="#30363d" stroke-width="1"/>
+        <line x1="120" y1="70" x2="120" y2="150" stroke="#30363d" stroke-width="1"/>
+        <line x1="140" y1="70" x2="140" y2="150" stroke="#30363d" stroke-width="1"/>
+        <line x1="160" y1="70" x2="160" y2="150" stroke="#30363d" stroke-width="1"/>
+        <line x1="180" y1="70" x2="180" y2="150" stroke="#30363d" stroke-width="1"/>
+        <!-- Motorwelle -->
+        <rect x="200" y="105" width="40" height="10" rx="3" fill="#3a4a5a" stroke="#58a6ff" stroke-width="1"/>
+        <!-- Wellenende / Kupplung -->
+        <rect x="238" y="100" width="10" height="20" rx="2" fill="#58a6ff" opacity=".5"/>
+        <!-- Lagerdeckel DE -->
+        <rect x="55" y="75" width="10" height="70" rx="4" fill="#243040" stroke="#58a6ff" stroke-width="1.5"/>
+        <!-- Lagerdeckel NDE -->
+        <rect x="195" y="75" width="10" height="70" rx="4" fill="#243040" stroke="#30363d" stroke-width="1.5"/>
+        <!-- Label Motor -->
+        <text x="130" y="115" font-family="monospace" font-size="12" fill="#e6edf3" text-anchor="middle" font-weight="bold">MOTOR</text>
+        <text x="130" y="130" font-family="monospace" font-size="9" fill="#7d8590" text-anchor="middle">Lager DE</text>
+        <!-- DE Label -->
+        <text x="60" y="165" font-family="monospace" font-size="9" fill="#58a6ff" text-anchor="middle">DE</text>
+        <text x="200" y="165" font-family="monospace" font-size="9" fill="#7d8590" text-anchor="middle">NDE</text>
+
+        <!-- ── ACHSEN AM LAGER ── -->
+        <!-- Ursprung Lager DE -->
+        <!-- Vertikal (V) = Y des iPhones wenn flach → Z-Achse oben -->
+        <line x1="60" y1="110" x2="60" y2="55" stroke="#3fb950" stroke-width="2" marker-end="url(#arrowG)"/>
+        <text x="63" y="50" font-family="monospace" font-size="10" fill="#3fb950" font-weight="bold">V</text>
+        <!-- Horizontal (H) = X des iPhones wenn flach -->
+        <line x1="60" y1="110" x2="18" y2="110" stroke="#ef4444" stroke-width="2" marker-end="url(#arrowR)"/>
+        <text x="8" y="114" font-family="monospace" font-size="10" fill="#ef4444" font-weight="bold">H</text>
+        <!-- Axial (A) = entlang Welle = Y des iPhones hochkant -->
+        <line x1="60" y1="110" x2="60" y2="155" stroke="#f0a32b" stroke-width="1.5" stroke-dasharray="4,3"/>
+        <text x="63" y="168" font-family="monospace" font-size="10" fill="#f0a32b" font-weight="bold">A</text>
+
+        <!-- ── iPHONE ── (flach, von oben) -->
+        <!-- Angezeigt rechts oben -->
+        <g id="phoneFlat" transform="translate(270,20)">
+          <rect x="0" y="0" width="72" height="46" rx="7" fill="#1c2330" stroke="#58a6ff" stroke-width="1.5"/>
+          <rect x="4" y="4" width="64" height="38" rx="4" fill="#0d1117"/>
+          <!-- Home-Indicator -->
+          <rect x="28" y="40" width="16" height="3" rx="1.5" fill="#30363d"/>
+          <!-- Kamera -->
+          <circle cx="8" cy="8" r="3" fill="#30363d"/>
+          <!-- Screen content hint -->
+          <rect x="10" y="10" width="40" height="24" rx="2" fill="#161b22"/>
+          <text x="30" y="27" font-family="monospace" font-size="8" fill="#58a6ff" text-anchor="middle">Z&#8593;</text>
+          <text x="8" y="4" font-family="monospace" font-size="7" fill="#7d8590">TOP</text>
+        </g>
+        <text x="306" y="78" font-family="monospace" font-size="9" fill="#7d8590" text-anchor="middle">iPhone flach</text>
+        <text x="306" y="89" font-family="monospace" font-size="9" fill="#3fb950" text-anchor="middle">Z = Vertikal (V)</text>
+
+        <!-- ── iPHONE hochkant (für Axial) ── -->
+        <g id="phoneUpright" transform="translate(276,100)">
+          <rect x="0" y="0" width="46" height="72" rx="7" fill="#1c2330" stroke="#f0a32b" stroke-width="1.5"/>
+          <rect x="4" y="4" width="38" height="64" rx="4" fill="#0d1117"/>
+          <rect x="15" y="67" width="16" height="3" rx="1.5" fill="#30363d"/>
+          <circle cx="23" cy="9" r="3" fill="#30363d"/>
+          <rect x="8" y="14" width="30" height="45" rx="2" fill="#161b22"/>
+          <text x="23" y="41" font-family="monospace" font-size="8" fill="#f0a32b" text-anchor="middle">Y&#8594;</text>
+        </g>
+        <text x="299" y="183" font-family="monospace" font-size="9" fill="#7d8590" text-anchor="middle">iPhone stehend</text>
+        <text x="299" y="194" font-family="monospace" font-size="9" fill="#f0a32b" text-anchor="middle">Y = Axial (A)</text>
+
+        <!-- ── Pfeil-Marker ── -->
+        <defs>
+          <marker id="arrowG" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,0 L0,8 L8,4 z" fill="#3fb950"/>
+          </marker>
+          <marker id="arrowR" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,0 L0,8 L8,4 z" fill="#ef4444"/>
+          </marker>
+        </defs>
+
+        <!-- Legende -->
+        <rect x="10" y="175" width="8" height="8" rx="1" fill="#3fb950"/>
+        <text x="22" y="183" font-family="monospace" font-size="9" fill="#3fb950">V vertikal</text>
+        <rect x="75" y="175" width="8" height="8" rx="1" fill="#ef4444"/>
+        <text x="87" y="183" font-family="monospace" font-size="9" fill="#ef4444">H horizontal</text>
+        <rect x="168" y="175" width="8" height="8" rx="1" fill="#f0a32b"/>
+        <text x="180" y="183" font-family="monospace" font-size="9" fill="#f0a32b">A axial</text>
+      </svg>
+    </div>
+
+    <!-- AUSRICHTUNGSHINWEIS -->
+    <div class="orient-hint">
+      <b>Messpunkt:</b> iPhone auf das <b>Lagergehäuse</b> legen (DE oder NDE)<br>
+      <b>V (vertikal):</b> iPhone flach, Display oben &rarr; Z-Achse misst<br>
+      <b>H (horizontal):</b> iPhone flach, Längsachse &perp; Motorwelle &rarr; X-Achse<br>
+      <b>A (axial):</b> iPhone hochkant, Längsachse parallel zur Welle &rarr; Y-Achse<br>
+      <b>Vektor:</b> iPhone beliebig &rarr; alle 3 Achsen kombiniert (konservativ)
+    </div>
+
+    <!-- ACHSAUSWAHL KARTEN -->
+    <div class="axis-cards">
+
+      <div class="axi-card on" id="axCard_Z" onclick="selectAxis('Z')">
+        <div class="axi-icon" style="background:rgba(63,185,80,.15);color:#3fb950">&#9650;</div>
+        <div class="axi-text">
+          <h3 style="color:#3fb950">V &ndash; Vertikal <span class="axis-badge">Z-Achse</span></h3>
+          <p>iPhone flach auflegen, Display nach oben.<br>
+             Misst vertikale Schwingung (senkrecht zur Motorachse).</p>
+          <div class="axi-norm">&#10003; Standard-Messrichtung nach DIN ISO 20816-3</div>
+        </div>
+        <div class="axi-radio"></div>
+      </div>
+
+      <div class="axi-card" id="axCard_X" onclick="selectAxis('X')">
+        <div class="axi-icon" style="background:rgba(239,68,68,.15);color:#ef4444">&#9654;</div>
+        <div class="axi-text">
+          <h3 style="color:#ef4444">H &ndash; Horizontal <span class="axis-badge" style="background:rgba(239,68,68,.15);color:#ef4444">X-Achse</span></h3>
+          <p>iPhone flach, Längsachse <b>quer</b> zur Motorwelle.<br>
+             Misst horizontale radiale Schwingung.</p>
+          <div class="axi-norm">&#10003; Radiale Messrichtung nach DIN ISO 20816-3</div>
+        </div>
+        <div class="axi-radio"></div>
+      </div>
+
+      <div class="axi-card" id="axCard_Y" onclick="selectAxis('Y')">
+        <div class="axi-icon" style="background:rgba(240,163,43,.15);color:#f0a32b">&#9658;</div>
+        <div class="axi-text">
+          <h3 style="color:#f0a32b">A &ndash; Axial <span class="axis-badge" style="background:rgba(240,163,43,.15);color:#f0a32b">Y-Achse</span></h3>
+          <p>iPhone <b>hochkant</b> stellen, Längsachse <b>parallel</b> zur Welle.<br>
+             Misst axiale Schwingung (Längsrichtung Welle).</p>
+          <div class="axi-norm">&#10003; Axiale Messrichtung nach DIN ISO 20816-3</div>
+        </div>
+        <div class="axi-radio"></div>
+      </div>
+
+      <div class="axi-card warn-axis" id="axCard_VEC" onclick="selectAxis('VEC')">
+        <div class="axi-icon" style="background:rgba(88,166,255,.15);color:#58a6ff">&#9733;</div>
+        <div class="axi-text">
+          <h3 style="color:#58a6ff">Vektor &ndash; Alle 3 Achsen <span class="axis-badge" style="background:rgba(88,166,255,.15);color:#58a6ff">X+Y+Z</span></h3>
+          <p>iPhone beliebig orientieren.<br>
+             V<sub>eff</sub> = &radic;(Vx&sup2; + Vy&sup2; + Vz&sup2;) &ndash; konservativster Wert.</p>
+          <div class="axi-norm" style="color:#f0a32b">&#9888; Nicht normkonform, aber vollst&auml;ndig</div>
+        </div>
+        <div class="axi-radio"></div>
+      </div>
+
+    </div><!-- .axis-cards -->
+
+    <button class="axis-go-btn" onclick="goToMeasure()">
+      MESSUNG STARTEN &rarr;
+    </button>
+
+  </div><!-- .axis-setup -->
+  <div class="gap"></div>
+</div><!-- /tab-achse -->
+
 <!-- ════════════════════════════════════ -->
 <!-- TAB 2: MESSUNG                      -->
 <!-- ════════════════════════════════════ -->
@@ -581,8 +783,11 @@ footer{text-align:center;padding:16px;font-size:9px;color:#484f58;line-height:1.
       <button class="btn bblu" id="btnSnap"  onclick="doSnap()"    disabled title="Zwischenwert speichern">&#128204;</button>
     </div>
     <div class="minfo" id="minfo">Sensor freigeben, dann START dr&uuml;cken</div>
-    <div style="font-size:10px;color:#58a6ff;font-family:monospace;text-align:center;margin-top:5px">
-      &#128241; iPhone flach auflegen &middot; Display oben &middot; Z-Achse = vertikal
+    <div style="font-size:10px;color:#58a6ff;font-family:monospace;
+      text-align:center;margin-top:5px;padding:6px 8px;
+      background:rgba(88,166,255,.05);border-radius:6px;">
+      &#128207; Messachse: <span id="axisModeLabel" style="font-weight:bold;color:#3fb950">V (Vertikal / Z)</span><br>
+      <span id="axisHint" style="color:#7d8590;font-size:9px">iPhone flach auf Lager legen – Display nach oben – Z-Achse = vertikal</span>
     </div>
     <div style="font-size:11px;font-family:monospace;color:#f0a32b;text-align:center;margin-top:4px" id="cdur"></div>
   </div>
@@ -718,10 +923,38 @@ function showTab(name){
   document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('on'); });
   document.getElementById('tab-'+name).classList.add('on');
   var tabs = document.querySelectorAll('.tab');
-  var map  = {rechner:0, messung:1, protokoll:2};
+  var map  = {rechner:0, achse:1, messung:2, protokoll:3};
   tabs[map[name]].classList.add('on');
   if(name==='protokoll') renderHist();
-  if(name==='messung'){ resizeAll(); drawAcc(); drawVeff(); }
+  if(name==='messung'){ resizeAll(); drawAcc(); drawVeff(); updateAxisBadge(); }
+}
+// Achsauswahl
+var axisMode = 'Z'; // Z, X, Y, VEC
+function selectAxis(mode){
+  axisMode = mode;
+  ['Z','X','Y','VEC'].forEach(function(m){
+    var c = document.getElementById('axCard_'+m);
+    c.classList.remove('on');
+  });
+  document.getElementById('axCard_'+mode).classList.add('on');
+  updateAxisBadge();
+}
+function goToMeasure(){
+  showTab('messung');
+}
+function updateAxisBadge(){
+  var labels = {Z:'V (Vertikal / Z)', X:'H (Horizontal / X)', Y:'A (Axial / Y)', VEC:'Vektor (X+Y+Z)'};
+  var colors = {Z:'#3fb950', X:'#ef4444', Y:'#f0a32b', VEC:'#58a6ff'};
+  var el = document.getElementById('axisModeLabel');
+  if(el){ el.textContent = labels[axisMode]; el.style.color = colors[axisMode]; }
+  var hint = document.getElementById('axisHint');
+  var hints = {
+    Z:  'iPhone flach auf Lager legen – Display nach oben – Z-Achse = vertikal',
+    X:  'iPhone flach, Längsachse quer zur Motorwelle – X-Achse = horizontal',
+    Y:  'iPhone hochkant, Längsachse parallel zur Motorwelle – Y-Achse = axial',
+    VEC:'★ Vektor: iPhone beliebig orientieren – alle 3 Achsen fließen ein'
+  };
+  if(hint) hint.textContent = hints[axisMode];
 }
 
 // ═══ RECHNER ═══
@@ -1111,8 +1344,14 @@ function onMotion(e){
   }
   var el=(now-t0)/1000;
   if(el<3){document.getElementById('minfo').textContent='Einschwingen '+(3-el).toFixed(0)+'s\u2026';return;}
-  a2+=azh*azh; aN++;
-  if(rawZ.length<FFTMAX) rawZ.push(azh);
+  // Accumulate according to selected axis mode
+  var asel;
+  if(axisMode==='X') asel=axh;
+  else if(axisMode==='Y') asel=ayh;
+  else if(axisMode==='VEC') asel=Math.sqrt(axh*axh+ayh*ayh+azh*azh);
+  else asel=azh; // Z default
+  a2+=asel*asel; aN++;
+  if(rawZ.length<FFTMAX) rawZ.push(asel);
   if(aN>=10){
     var arms=Math.sqrt(a2/aN)*1000;
     var vLive=arms/(2*Math.PI*rpmFreq);
@@ -1168,6 +1407,7 @@ function doStop(save){
     return;
   }
   rFreq=rpmFreq; rArms=Math.sqrt(a2/aN)*1000; rVeff=rArms/(2*Math.PI*rFreq);
+  var axLabel={Z:'V-Vertikal',X:'H-Horizontal',Y:'A-Axial',VEC:'Vektor'}[axisMode];
   var fR=domF(rawZ,fs); updatePurity(fR.purity,fR.f);
   for(var i=0;i<mlog.length;i++) mlog[i].veff=parseFloat((mlog[i].arms/(2*Math.PI*rFreq)).toFixed(2));
   updateVcard(rVeff,null);
@@ -1192,7 +1432,7 @@ function doSnap(){
 function saveToHist(v){
   var now=new Date();
   hist.unshift({
-    v:v, freq:rpmFreq, rpm:rpm, arms:rArms||Math.sqrt(a2/aN)*1000,
+    v:v, freq:rpmFreq, rpm:rpm, arms:rArms||Math.sqrt(a2/aN)*1000, axis:axisMode,
     dur:dur, log:mlog.slice(), kw:motorKw, poles:poles,
     anlage:document.getElementById('iAnlage').value,
     ort:document.getElementById('iOrt').value,
@@ -1220,9 +1460,9 @@ function renderHist(){
       +'<div class="hi-dot" style="background:'+zo.c+'"></div>'
       +'<div class="hi-veff" style="color:'+css+'">'+e.v.toFixed(2)</div>'
       +'<div class="hi-info">'
-        +(e.anlage?e.anlage+'<br>':''  )
+        +(e.anlage?e.anlage+'<br>':'')
         +e.date+' '+e.time+'<br>'
-        +e.poles+'-pol, '+e.kw+'kW, '+e.freq.toFixed(1)+' Hz, '+e.rpm+' U/min'
+        +e.poles+'-pol, '+e.kw+'kW, '+e.freq.toFixed(1)+' Hz'+(e.axis?' ['+e.axis+']':'')
       +'</div>'
       +'<div class="hi-zone" style="color:'+zo.c+'">'+zn+'</div>'
       +'</div>';
@@ -1272,6 +1512,7 @@ function doPdf(){
     mRows.push('<tr>'
       +'<td>'+(hist.length-i)+'</td><td>'+e.date+'</td><td>'+e.time+'</td>'
       +'<td><b>'+e.v.toFixed(2)+'</b></td>'
+      +'<td>'+(e.axis||'Z')+'</td>'
       +'<td>'+(e.rpm||'\u2014')+'</td>'
       +'<td>'+e.freq.toFixed(1)+'</td>'
       +'<td>'+e.poles+'-polig</td>'
@@ -1318,7 +1559,7 @@ function doPdf(){
     +'<div class="sec">Messwerte ('+hist.length+' Eintr\u00e4ge)</div>'
     +'<table><tr>'
     +'<th>#</th><th>Datum</th><th>Uhrzeit</th>'
-    +'<th>Veff [mm/s]</th><th>U/min</th><th>f [Hz]</th>'
+    +'<th>Veff [mm/s]</th><th>Achse</th><th>U/min</th><th>f [Hz]</th>'
     +'<th>Polzahl</th><th>Leistung</th><th>aRMS [mm/s\u00b2]</th>'
     +'<th>Dauer [s]</th><th>Zone</th>'
     +'</tr>'+mRows.join('')+'</table>'
