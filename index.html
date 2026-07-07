@@ -873,6 +873,48 @@ footer{text-align:center;padding:16px;font-size:9px;color:#636e7b;line-height:1.
 
   <div class="gap"></div>
 
+  <!-- OPTIONEN -->
+  <div style="margin:0 12px;background:#1c2128;border:1px solid #3d444d;
+    border-radius:10px;padding:10px 14px;">
+    <div style="font-size:10px;color:#adbac7;font-family:monospace;letter-spacing:1px;
+      text-transform:uppercase;font-weight:bold;margin-bottom:10px;">Druckoptionen</div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+      <div>
+        <div style="font-size:12px;color:#f0f6fc;font-weight:bold;">DIN-Erklärung anhängen</div>
+        <div style="font-size:10px;color:#adbac7;font-family:monospace;margin-top:2px;">
+          Was misst DIN ISO 20816-3? &middot; Messmethode &middot; Hinweise
+        </div>
+      </div>
+      <div id="dinToggleBtn" onclick="toggleDinAppend()"
+        style="width:44px;height:26px;border-radius:13px;background:#3d444d;
+        position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;margin-left:12px;">
+        <div id="dinToggleKnob"
+          style="width:20px;height:20px;border-radius:50%;background:#adbac7;
+          position:absolute;top:3px;left:3px;transition:left .2s,background .2s;"></div>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:12px;color:#f0f6fc;font-weight:bold;">Messachsen-Diagramm</div>
+        <div style="font-size:10px;color:#adbac7;font-family:monospace;margin-top:2px;">
+          iPhone-Ausrichtung &middot; V/H/A Achsdiagramm
+        </div>
+      </div>
+      <div id="svgToggleBtn" onclick="toggleSvgAppend()"
+        style="width:44px;height:26px;border-radius:13px;background:#3d444d;
+        position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;margin-left:12px;">
+        <div id="svgToggleKnob"
+          style="width:20px;height:20px;border-radius:50%;background:#adbac7;
+          position:absolute;top:3px;left:3px;transition:left .2s,background .2s;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="gap"></div>
+
   <button class="bpdf" id="btnPdf" onclick="doPdf()" disabled>&#128438; MESSPROTOKOLL DRUCKEN / PDF</button>
 
   <div class="gap"></div>
@@ -1117,6 +1159,27 @@ function updateSum(){
       motorKw+' kW, '+poles+'-polig, '+fuHz+' Hz FU'
     ].filter(Boolean).join('<br>');
   }
+}
+
+// ═══ DRUCKOPTIONEN TOGGLE ═══
+var appendDin = false;
+var appendSvg = false;
+
+function toggleDinAppend(){
+  appendDin = !appendDin;
+  var btn   = document.getElementById('dinToggleBtn');
+  var knob  = document.getElementById('dinToggleKnob');
+  btn.style.background  = appendDin ? '#2ea043' : '#3d444d';
+  knob.style.left       = appendDin ? '21px' : '3px';
+  knob.style.background = appendDin ? '#fff' : '#adbac7';
+}
+function toggleSvgAppend(){
+  appendSvg = !appendSvg;
+  var btn   = document.getElementById('svgToggleBtn');
+  var knob  = document.getElementById('svgToggleKnob');
+  btn.style.background  = appendSvg ? '#2ea043' : '#3d444d';
+  knob.style.left       = appendSvg ? '21px' : '3px';
+  knob.style.background = appendSvg ? '#fff' : '#adbac7';
 }
 
 // ═══════════════════════════════════════════════════
@@ -1569,7 +1632,112 @@ function doPdf(){
     +'Norm: DIN ISO 20816-3 \u00b7 Elektromotoren 5\u2013100 kW \u00b7 FU-Betrieb<br>'
     +'<b>Hinweis:</b> Diese App-Messung ersetzt keine kalibrierte Schwingungsmessung '
     +'nach DIN ISO 20816 / VDI 2056. Sensor: iPhone DeviceMotionEvent (unkalibriert).'
-    +'</div></body></html>';
+    +'</div>';
+
+  // ── ANHANG 1: DIN-Erklärung ──────────────────────────────────────────────
+  if(appendDin){
+    html +=
+      '<div style="page-break-before:always"></div>'
+     +'<div style="background:#0d1117;color:#fff;padding:10px 16px;border-radius:6px;margin-bottom:14px">'
+     +'<h2 style="font-size:15px;margin:0">Anhang: Was misst DIN ISO 20816-3?</h2>'
+     +'<p style="font-size:10px;color:#aaa;margin-top:3px">Erl\u00e4uterungen zur Schwingungsmessung an Elektromotoren</p>'
+     +'</div>'
+     +'<p style="font-size:12px;margin-bottom:12px;line-height:1.6">'
+     +'Die Norm <b>DIN ISO 20816-3</b> legt fest, wie Schwingungen an Elektromotoren von '
+     +'<b>15 kW bis 50 MW</b> bewertet werden (f\u00fcr 5\u201315 kW gilt Teil\u00a01 sinngem\u00e4\u00df). '
+     +'Gemessen wird die <b>Schwingungsgeschwindigkeit V<sub>eff</sub></b> in mm/s (RMS-Wert).'
+     +'</p>'
+     +'<table>'
+     +'<tr><th style="width:130px">Merkmal</th><th>Beschreibung</th></tr>'
+     +'<tr><td><b>Messgr\u00f6\u00dfe</b></td><td>V<sub>eff</sub> &ndash; Effektivwert der Schwingungsgeschwindigkeit [mm/s\u00a0RMS]</td></tr>'
+     +'<tr><td><b>Frequenzbereich</b></td><td>10\u20131000\u00a0Hz (kalibriertes Ger\u00e4t) &nbsp;|&nbsp; Diese App: HP\u00a02\u00a0Hz, Nyquist\u00a0\u223c\u00a050\u00a0Hz</td></tr>'
+     +'<tr><td><b>Messpunkte</b></td><td>Lagergehäuse radial und axial &ndash; Antriebsseite (AS) und Nichtantriebsseite (NAS)</td></tr>'
+     +'<tr><td><b>Messrichtungen</b></td><td>Vertikal (V), Horizontal (H), Axial (A) &ndash; je Lagerseite</td></tr>'
+     +'<tr><td><b>Aufstellung Gr.\u00a01</b></td><td>Starr auf schwerem Fundament &ndash; gilt f\u00fcr Motoren &gt;15\u00a0kW</td></tr>'
+     +'<tr><td><b>Aufstellung Gr.\u00a02</b></td><td>Flexibel / nachgiebige Aufstellung &ndash; gilt f\u00fcr 5\u201315\u00a0kW</td></tr>'
+     +'<tr><td><b>Berechnungsformel</b></td><td>V<sub>eff</sub> = a<sub>RMS</sub> [mm/s\u00b2] \u00f7 (2\u03c0 \u00b7 f) &nbsp;|&nbsp; f = Drehfrequenz in Hz aus FU-Einstellung</td></tr>'
+     +'<tr><td><b>FU-Betrieb</b></td><td>Bei variabler Drehzahl: Messung bei Nenndrehzahl (50\u00a0Hz) und bei Betriebsdrehzahl empfohlen</td></tr>'
+     +'</table>'
+     +'<div class="sec">Zonenbewertung</div>'
+     +'<table>'
+     +'<tr><th>Zone</th><th>Bewertung</th><th>Ma\u00dfnahme</th></tr>'
+     +'<tr><td style="color:'+ISO_ZONES.g1[0].c+';font-weight:bold">A</td><td>Neuzustand, unbedenklich</td><td>Keine Ma\u00dfnahme erforderlich</td></tr>'
+     +'<tr><td style="color:'+ISO_ZONES.g1[1].c+';font-weight:bold">B</td><td>Langzeitbetrieb zul\u00e4ssig</td><td>Beobachten, regelm\u00e4\u00dfig messen</td></tr>'
+     +'<tr><td style="color:'+ISO_ZONES.g1[2].c+';font-weight:bold">C</td><td>Eingeschr\u00e4nkt zul\u00e4ssig</td><td>Ursache ermitteln, Wartung einplanen</td></tr>'
+     +'<tr><td style="color:'+ISO_ZONES.g1[3].c+';font-weight:bold">D</td><td>Unzul\u00e4ssig, Schaden droht</td><td>Sofort abschalten, Inspektion</td></tr>'
+     +'</table>'
+     +'<div style="margin-top:12px;padding:10px 14px;background:#fff8e6;border-left:4px solid #f0a32b;border-radius:3px;font-size:11px;line-height:1.7">'
+     +'<b>\u26a0 Hinweis zur Kalibrierpflicht:</b> Amtliche Abnahmen und Dokumentationen nach DIN ISO 20816 '
+     +'erfordern kalibrierte Schwingungsaufnehmer (Klasse\u00a01 nach IEC\u00a061672). '
+     +'Diese App eignet sich f\u00fcr <b>Trend\u00fcberwachung und Vergleichsmessungen</b> im Betrieb, '
+     +'ersetzt aber keine kalibrierte Messung.'
+     +'</div>';
+  }
+
+  // ── ANHANG 2: Achsdiagramm ───────────────────────────────────────────────
+  if(appendSvg){
+    html +=
+      '<div style="page-break-before:always"></div>'
+     +'<div style="background:#0d1117;color:#fff;padding:10px 16px;border-radius:6px;margin-bottom:14px">'
+     +'<h2 style="font-size:15px;margin:0">Anhang: Messachsen &amp; iPhone-Ausrichtung</h2>'
+     +'<p style="font-size:10px;color:#aaa;margin-top:3px">Messpunkte nach DIN ISO 20816-3</p>'
+     +'</div>'
+     +'<svg viewBox="0 0 480 230" width="100%" xmlns="http://www.w3.org/2000/svg" style="max-width:500px;display:block;margin:0 auto 16px">'
+     +'<rect width="480" height="230" fill="#f8f9fa" rx="8"/>'
+     // Motor
+     +'<rect x="80" y="75" width="180" height="80" rx="10" fill="#e8ecf0" stroke="#888" stroke-width="1.5"/>'
+     +'<line x1="100" y1="75" x2="100" y2="155" stroke="#ccc" stroke-width="1"/>'
+     +'<line x1="120" y1="75" x2="120" y2="155" stroke="#ccc" stroke-width="1"/>'
+     +'<line x1="140" y1="75" x2="140" y2="155" stroke="#ccc" stroke-width="1"/>'
+     +'<line x1="160" y1="75" x2="160" y2="155" stroke="#ccc" stroke-width="1"/>'
+     +'<line x1="180" y1="75" x2="180" y2="155" stroke="#ccc" stroke-width="1"/>'
+     +'<line x1="200" y1="75" x2="200" y2="155" stroke="#ccc" stroke-width="1"/>'
+     +'<rect x="260" y="108" width="40" height="10" rx="3" fill="#aaa" stroke="#58a6ff" stroke-width="1"/>'
+     +'<rect x="75" y="80" width="10" height="70" rx="4" fill="#d0dbe8" stroke="#1a6cb5" stroke-width="1.5"/>'
+     +'<rect x="255" y="80" width="10" height="70" rx="4" fill="#d0dbe8" stroke="#888" stroke-width="1.5"/>'
+     +'<text x="170" y="120" font-family="Arial" font-size="13" fill="#333" text-anchor="middle" font-weight="bold">MOTOR</text>'
+     +'<text x="80" y="170" font-family="Arial" font-size="10" fill="#1a6cb5" text-anchor="middle" font-weight="bold">DE</text>'
+     +'<text x="260" y="170" font-family="Arial" font-size="10" fill="#888" text-anchor="middle">NDE</text>'
+     // Achsen DE
+     +'<line x1="80" y1="115" x2="80" y2="55" stroke="#2ea043" stroke-width="2.5" marker-end="url(#ag)"/>'
+     +'<text x="84" y="50" font-family="Arial" font-size="11" fill="#2ea043" font-weight="bold">V</text>'
+     +'<line x1="80" y1="115" x2="30" y2="115" stroke="#c0392b" stroke-width="2.5" marker-end="url(#ar)"/>'
+     +'<text x="14" y="119" font-family="Arial" font-size="11" fill="#c0392b" font-weight="bold">H</text>'
+     +'<line x1="80" y1="115" x2="80" y2="160" stroke="#d07010" stroke-width="2" stroke-dasharray="5,3"/>'
+     +'<text x="84" y="174" font-family="Arial" font-size="11" fill="#d07010" font-weight="bold">A</text>'
+     // iPhone flach
+     +'<rect x="340" y="40" width="80" height="52" rx="8" fill="#e8ecf0" stroke="#1a6cb5" stroke-width="2"/>'
+     +'<rect x="346" y="46" width="68" height="40" rx="4" fill="#fff"/>'
+     +'<text x="380" y="70" font-family="Arial" font-size="10" fill="#2ea043" text-anchor="middle" font-weight="bold">Z \u2191 V</text>'
+     +'<text x="380" y="106" font-family="Arial" font-size="9" fill="#666" text-anchor="middle">flach \u2192 V vertikal</text>'
+     // iPhone hochkant
+     +'<rect x="355" y="130" width="50" height="80" rx="8" fill="#e8ecf0" stroke="#d07010" stroke-width="2"/>'
+     +'<rect x="361" y="136" width="38" height="68" rx="4" fill="#fff"/>'
+     +'<text x="380" y="175" font-family="Arial" font-size="10" fill="#d07010" text-anchor="middle" font-weight="bold">Y \u2192 A</text>'
+     +'<text x="380" y="224" font-family="Arial" font-size="9" fill="#666" text-anchor="middle">stehend \u2192 A axial</text>'
+     // Legende
+     +'<rect x="20" y="190" width="10" height="10" rx="2" fill="#2ea043"/>'
+     +'<text x="34" y="199" font-family="Arial" font-size="10" fill="#333">V \u2013 Vertikal (Z-Achse, iPhone flach)</text>'
+     +'<rect x="20" y="207" width="10" height="10" rx="2" fill="#c0392b"/>'
+     +'<text x="34" y="216" font-family="Arial" font-size="10" fill="#333">H \u2013 Horizontal (X-Achse, iPhone flach, quer)</text>'
+     +'<rect x="20" y="224" width="10" height="10" rx="2" fill="#d07010"/>'  
+     +'<text x="34" y="233" font-family="Arial" font-size="10" fill="#333">A \u2013 Axial (Y-Achse, iPhone hochkant, parallel Welle)</text>'
+     // Pfeile
+     +'<defs>'
+     +'<marker id="ag" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#2ea043"/></marker>'
+     +'<marker id="ar" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L0,8 L8,4 z" fill="#c0392b"/></marker>'
+     +'</defs>'
+     +'</svg>'
+     +'<table>'
+     +'<tr><th>Achse</th><th>Richtung</th><th>iPhone-Position</th><th>Norm</th></tr>'
+     +'<tr><td style="color:#2ea043;font-weight:bold">V \u2013 Vertikal</td><td>Senkrecht zur Motorachse</td><td>Flach auflegen, Display oben \u2192 Z-Achse misst</td><td>DIN-Standard \u2713</td></tr>'
+     +'<tr><td style="color:#c0392b;font-weight:bold">H \u2013 Horizontal</td><td>Waagerecht, radial</td><td>Flach, L\u00e4ngsachse quer zur Motorwelle \u2192 X-Achse</td><td>DIN radial \u2713</td></tr>'
+     +'<tr><td style="color:#d07010;font-weight:bold">A \u2013 Axial</td><td>Entlang der Motorwelle</td><td>Hochkant, L\u00e4ngsachse parallel zur Welle \u2192 Y-Achse</td><td>DIN axial \u2713</td></tr>'
+     +'<tr><td style="color:#1a6cb5;font-weight:bold">Vektor X+Y+Z</td><td>Alle Richtungen kombiniert</td><td>Beliebig \u2192 V<sub>eff</sub> = \u221a(Vx\u00b2+Vy\u00b2+Vz\u00b2)</td><td>Nicht normkonform, konservativ</td></tr>'
+     +'</table>';
+  }
+
+  html += '</body></html>';
 
   // Neues Tab öffnen → Safari: Teilen → Drucken
   var w = window.open('', '_blank');
